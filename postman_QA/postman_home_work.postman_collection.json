@@ -12,7 +12,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"let jsonData = JSON.parse(responseBody);\r",
+							"var jsonData = JSON.parse(responseBody);\r",
 							"postman.setEnvironmentVariable(\"token\", jsonData.token);"
 						],
 						"type": "text/javascript"
@@ -27,7 +27,7 @@
 					"formdata": [
 						{
 							"key": "login",
-							"value": "spaun",
+							"value": "sergey",
 							"type": "text"
 						},
 						{
@@ -59,6 +59,10 @@
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
+							"//передаем перемнную в окружение\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"postman.setEnvironmentVariable(\"u_salary_1_5_year\", jsonData.start_qa_salary*4);\r",
 							"\r",
 							" pm.test(\"check_age\", function() {\r",
 							"       var jsonData = pm.response.json();\r",
@@ -70,7 +74,14 @@
 							"    pm.expect(responseJson.qa_salary_after_6_months).to.eql(responseJson.start_qa_salary*2); \r",
 							"     pm.expect(responseJson.qa_salary_after_12_months).to.eql(responseJson.start_qa_salary*2.9); \r",
 							"      pm.expect(responseJson.person.u_salary_1_5_year).to.eql(responseJson.start_qa_salary*4); \r",
-							"});"
+							"console.log(responseJson.start_qa_salary*2);\r",
+							"console.log(responseJson.start_qa_salary*2.9);\r",
+							"console.log(responseJson.start_qa_salary*4);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -156,14 +167,15 @@
 							" });\r",
 							"\r",
 							"\r",
-							"\r",
+							" pm.test(\"check structure json\", function() {\r",
+							"  let jsonData = pm.response.json();\r",
 							" \r",
-							" \r",
-							"  \r",
-							"\r",
+							" pm.expect(jsonData.age).to.be.a(\"number\");\r",
+							" pm.expect(jsonData.name).to.be.a(\"string\");\r",
+							" pm.expect(jsonData.salary).to.be.a(\"array\"); \r",
+							" });\r",
 							"    \r",
-							"       \r",
-							"\r",
+							"  \r",
 							"\r",
 							"\r",
 							"\r",
@@ -223,93 +235,41 @@
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
-							"\r",
-							"  pm.test(\"check_age\", function() {\r",
-							"       var jsonData = pm.response.json();\r",
-							"       pm.expect(jsonData.age).to.eql(5);\r",
-							"       });\r",
-							"\r",
-							"   pm.test(\"daily_food\", function() {\r",
-							"       var jsonData = pm.response.json();\r",
-							"       pm.expect(jsonData.daily_food).to.eql(weight * 0.012,);\r",
-							"       });\r",
-							"\r",
-							"   \r",
-							"\r",
-							"   "
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "auth_token",
-							"value": "{{token}}",
-							"type": "text"
-						},
-						{
-							"key": "age",
-							"value": "5",
-							"type": "text"
-						},
-						{
-							"key": "name",
-							"value": "mohito",
-							"type": "text"
-						},
-						{
-							"key": "salary",
-							"value": "1000",
-							"type": "text",
-							"disabled": true
-						},
-						{
-							"key": "weight",
-							"value": "5",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{url2}}/test_pet_info",
-					"host": [
-						"{{url2}}"
-					],
-					"path": [
-						"test_pet_info"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "test_pet_info Copy",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							" \r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.name).to.eql('mohito');\r",
 							"});\r",
 							"\r",
-							"  pm.test(\"check_age\", function() {\r",
-							"       var jsonData = pm.response.json();\r",
-							"       pm.expect(jsonData.age).to.eql(5);\r",
-							"       });\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.age).to.eql(5);\r",
 							"\r",
 							"\r",
-							"  var jsonData = JSON.parse(responseBody);\r",
-							"postman.setEnvironmentVariable(\"weight\", jsonData.weight);\r",
+							"pm.environment.set(\"weight\", 10);\r",
 							"\r",
 							"\r",
-							"   "
+							"var jsonData = pm.response.json(); \r",
+							"pm.test(\"Name Check daily_food\", function () { \r",
+							"pm.expect(pm.variables.get(\"weight\")).is.to.equal(jsonData.daily_food / 0.012); \r",
+							"});\r",
+							"pm.test(\"Name Checkdaily_sleep\", function () { \r",
+							"pm.expect(pm.variables.get(\"weight\")).is.to.equal(jsonData.daily_sleep / 2.5); \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Name Check daily_sleep\", function () { \r",
+							"pm.expect(pm.variables.get(\"weight\")).is.to.equal(10); \r",
+							"\r",
+							"});\r",
+							"pm.test(\"Name Check tipe of value\", function () { \r",
+							" pm.expect(jsonData.age).to.be.a(\"number\");\r",
+							"  pm.expect(pm.variables.get(\"weight\")).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.daily_food).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.daily_sleep).to.be.a(\"number\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							" "
 						],
 						"type": "text/javascript"
 					}
@@ -337,17 +297,16 @@
 							"type": "text"
 						},
 						{
-							"key": "salary",
-							"value": "1000",
-							"type": "text",
-							"disabled": true
-						},
-						{
 							"key": "weight",
-							"value": "5",
+							"value": "{{weight}}",
 							"type": "text"
 						}
-					]
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "{{url2}}/test_pet_info",
@@ -372,15 +331,17 @@
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							" pm.test(\"check_age\", function() {\r",
+							"pm.test(\"check_age\", function() {\r",
+							"       var jsonData = pm.response.json();\r",
+							"       pm.expect(jsonData.age).to.be.a(\"string\");\r",
+							"       });\r",
+							"\r",
+							" pm.test(\"check_age_value\", function() {\r",
 							"       var jsonData = pm.response.json();\r",
 							"       pm.expect(jsonData.age).to.eql(\"100\");\r",
 							"       });\r",
 							"\r",
-							"  pm.test(\"check_age\", function() {\r",
-							"       var jsonData = pm.response.json();\r",
-							"       pm.expect(jsonData.age).to.eql(\"100\");\r",
-							"       });      \r",
+							" \r",
 							"\r",
 							" pm.test(\"u_salary\", function() {\r",
 							"       var jsonData = pm.response.json();\r",
@@ -390,7 +351,34 @@
 							" pm.test(\"u_salary_1_5_year\", function() {\r",
 							"       var jsonData = pm.response.json();\r",
 							"       pm.expect(jsonData.family.u_salary_1_5_year).to.eql(jsonData.salary*4);\r",
-							"       });      "
+							"       });      \r",
+							"\r",
+							" pm.test(\"test array\", function() {\r",
+							"      const jsonData = pm.response.json();\r",
+							"       pm.expect(jsonData.family.children).to.be.an(\"array\");\r",
+							"\r",
+							"   });\r",
+							"\r",
+							"\r",
+							"pm.test(\"test value array\", function() {\r",
+							"      const jsonData = pm.response.json();\r",
+							"       pm.expect(jsonData.family.children[0][0]).to.eql(\"Alex\");\r",
+							"       pm.expect(jsonData.family.children[0][1]).to.eql(24);\r",
+							"       pm.expect(jsonData.family.children[1][0]).to.eql(\"Kate\");\r",
+							"       pm.expect(jsonData.family.children[1][1]).to.eql(12);\r",
+							"  \r",
+							"\r",
+							"   });\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
 						],
 						"type": "text/javascript"
 					}
